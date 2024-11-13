@@ -2,7 +2,7 @@
 
 public class Result<T>
 {
-    protected internal Result(T data, bool isSuccess, Error error)
+    protected internal Result(T? data, bool isSuccess, Error error)
     {
         switch (isSuccess)
         {
@@ -18,7 +18,7 @@ public class Result<T>
         }
     }
 
-    public T Data { get;}
+    public T? Data { get;}
     public Error Error { get; }
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
@@ -28,8 +28,8 @@ public class Result<T>
         return new Result<T>(data, true, Error.None);
     }
 
-    public static Result<T?> Failure(Error error)
+    public static Result<T> Failure(Error error)
     {
-        return new Result<T?>(default, false, error);
+        return new Result<T>(default, false, error);
     }
 }
