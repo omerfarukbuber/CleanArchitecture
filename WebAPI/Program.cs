@@ -1,5 +1,6 @@
 using Application;
 using Carter;
+using Domain.Products;
 using Infrastructure;
 using Marten;
 using Presentation;
@@ -20,6 +21,9 @@ builder.Services.AddMarten(options =>
 {
     options.Connection(builder.Configuration.GetConnectionString("Database")!);
     options.UseSystemTextJsonForSerialization();
+
+    options.Schema.For<Product>().SoftDeleted();
+
     if (builder.Environment.IsDevelopment())
     {
         options.AutoCreateSchemaObjects = AutoCreate.All;
