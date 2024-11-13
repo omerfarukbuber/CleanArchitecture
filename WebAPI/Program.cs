@@ -1,4 +1,5 @@
 using Application;
+using Carter;
 using Infrastructure;
 using Presentation;
 using Serilog;
@@ -29,5 +30,7 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging(); 
 
 app.UseHttpsRedirection();
+
+app.MapCarter();
 
 app.Run();
