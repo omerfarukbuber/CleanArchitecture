@@ -11,7 +11,7 @@ public class Result
             case false when error == Error.None:
                 throw new InvalidOperationException();
             default:
-                IsSuccess = IsSuccess;
+                IsSuccess = isSuccess;
                 Error = error;
                 break;
         }
