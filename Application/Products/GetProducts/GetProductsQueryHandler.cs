@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.Messaging;
 using Domain.Products;
-using Domain.Shared;
+using Domain.Shared.Results;
 using Marten;
 
 namespace Application.Products.GetProducts;
