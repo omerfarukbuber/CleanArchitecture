@@ -10,7 +10,7 @@ internal sealed class GetProductsQueryHandler(IDocumentSession session)
 {
     private readonly IDocumentSession _session = session;
 
-    public async Task<Result<List<ProductResponse>>> Handle(GetProductsQuery query, CancellationToken cancellationToken)
+    public async Task<Result<List<ProductResponse>>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
         var products = await _session
             .Query<Product>()
@@ -20,8 +20,11 @@ internal sealed class GetProductsQueryHandler(IDocumentSession session)
                 p.Name,
                 p.Price,
                 p.Tags
-            )).ToListAsync(cancellationToken);
+            ))
+            .OrderByDescending(p => p.Id)
+            .Skip((request.Page - 1) * request.PageSize)
+            .Take(request.PageSize).ToListAsync(cancellationToken);
 
-        return Result<List<ProductResponse>>.Success(products.ToList());
+        return Result.Success<List<ProductResponse>>(products.ToList());
     }
 }
