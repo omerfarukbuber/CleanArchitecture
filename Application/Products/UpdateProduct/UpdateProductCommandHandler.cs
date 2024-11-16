@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.Messaging;
 using Application.Products.GetProducts;
 using Domain.Products;
-using Domain.Shared;
+using Domain.Shared.Results;
 using Mapster;
 using Marten;
 
@@ -19,7 +19,8 @@ internal sealed class UpdateProductCommandHandler(IDocumentSession session)
 
         if (product is null)
         {
-            return Result<ProductResponse>.Failure(new Error("Product.NotFound", $"The product with the Id = '{request.Id}' couldn't found."));
+            return Result.Failure<ProductResponse>(Error.NotFound("Product.NotFound",
+                $"The product with the Id = '{request.Id}' couldn't found."));
         }
 
         product.Name = request.Name;
@@ -29,6 +30,6 @@ internal sealed class UpdateProductCommandHandler(IDocumentSession session)
         _session.Update(product);
         await _session.SaveChangesAsync(cancellationToken);
 
-        return Result<ProductResponse>.Success(product.Adapt<ProductResponse>());
+        return Result.Success(product.Adapt<ProductResponse>());
     }
 }
