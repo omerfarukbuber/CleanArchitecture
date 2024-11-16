@@ -3,13 +3,11 @@ using Application.Products.DeleteProduct;
 using Application.Products.GetProducts;
 using Application.Products.UpdateProduct;
 using Carter;
-using Domain.Shared;
 using Domain.Shared.Results;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
@@ -19,9 +17,9 @@ public class ProductsModule() : CarterModule("api/products")
 {
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/", async (ISender sender) =>
+        app.MapGet("/", async ([FromQuery]long cursor, [FromQuery] int pageSize, ISender sender) =>
         {
-            var getProductsQuery = new GetProductsQuery();
+            var getProductsQuery = new GetProductsCursorQuery(cursor <= 0 ? long.MaxValue : cursor , pageSize < 1 ? 20 : pageSize);
 
             var result = await sender.Send(getProductsQuery);
 
