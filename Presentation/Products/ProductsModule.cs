@@ -4,10 +4,12 @@ using Application.Products.GetProducts;
 using Application.Products.UpdateProduct;
 using Carter;
 using Domain.Shared;
+using Domain.Shared.Results;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
@@ -23,7 +25,7 @@ public class ProductsModule() : CarterModule("api/products")
 
             var result = await sender.Send(getProductsQuery);
 
-            return Results.Ok(result.Data);
+            return result.Match(Results.Ok, ApiResults.Problem);
         });
 
         app.MapPost("/", async (CreateProductRequest request, ISender sender) =>
@@ -31,8 +33,7 @@ public class ProductsModule() : CarterModule("api/products")
             var createProductCommand = request.Adapt<CreateProductCommand>();
 
             var result = await sender.Send(createProductCommand);
-
-            return Results.Ok();
+            return result.Match(Results.NoContent, ApiResults.Problem);
         });
 
         app.MapPut("/{productId:long}",
@@ -46,15 +47,15 @@ public class ProductsModule() : CarterModule("api/products")
             };
 
             var result = await sender.Send(updateProductCommand);
-
-            return result.IsFailure ? Results.NotFound(result) : Results.Ok(result.Data);
+            return result.Match(Results.Ok, ApiResults.Problem);
         });
 
+        
         app.MapDelete("/{productId:long}",
             async (int productId, ISender sender) =>
         {
             var result = await sender.Send(new DeleteProductCommand(productId));
-            return result.IsFailure ? Results.NotFound(result) : Results.NoContent();
+            return result.Match(Results.NoContent, ApiResults.Problem);
         });
     }
 }
