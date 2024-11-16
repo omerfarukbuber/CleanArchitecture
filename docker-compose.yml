@@ -1,0 +1,20 @@
+services:
+  webapi:
+    image: ${DOCKER_REGISTRY-}webapi
+    build:
+      context: .
+      dockerfile: WebAPI/Dockerfile
+    environment:
+      - ConnectionStrings__Database=Host=Database; Database=cleanarchitecture-db; Username=postgres; Password=postgres
+
+  cleanarchitecture.db:
+    image: postgres:latest
+    container_name: Database
+    environment:
+      - POSTGRES_DB=cleanarchitecture-db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./.containers/database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
