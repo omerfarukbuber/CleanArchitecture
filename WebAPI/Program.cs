@@ -30,10 +30,10 @@ builder.Services.AddMarten(options =>
     }
 }).ApplyAllDatabaseChangesOnStartup();
 
-builder.Host.UseSerilog((context, configuration) =>
-{
-    configuration.ReadFrom.Configuration(context.Configuration); 
-});
+//builder.Host.UseSerilog((context, configuration) =>
+//{
+//    configuration.ReadFrom.Configuration(context.Configuration); 
+//});
 
 var app = builder.Build();
 
@@ -43,7 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseSerilogRequestLogging(); 
+//app.UseSerilogRequestLogging(); 
 
 app.UseHttpsRedirection();
 
