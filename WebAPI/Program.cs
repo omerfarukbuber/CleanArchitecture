@@ -2,9 +2,10 @@ using Application;
 using Carter;
 using Domain.Products;
 using Infrastructure;
+using Infrastructure.MessageBroker;
 using Marten;
+using Microsoft.Extensions.Options;
 using Presentation;
-using Serilog;
 using Weasel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,10 @@ builder.Services
     .AddApplication()
     .AddInfrastructure()
     .AddPresentation();
+
+builder.Services.Configure<MessageBrokerSettings>(builder.Configuration.GetSection("MessageBroker"));
+builder.Services.AddSingleton(serviceProvider =>
+    serviceProvider.GetRequiredService<IOptions<MessageBrokerSettings>>().Value);
 
 builder.Services.AddMarten(options =>
 {
