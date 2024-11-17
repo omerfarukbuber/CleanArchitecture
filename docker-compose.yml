@@ -5,7 +5,13 @@ services:
       context: .
       dockerfile: WebAPI/Dockerfile
     environment:
-      - ConnectionStrings__Database=Host=Database; Database=cleanarchitecture-db; Username=postgres; Password=postgres
+      - ConnectionStrings__Database=Host=cleanarchitecture.db; Database=cleanarchitecture-db; Username=postgres; Password=postgres
+      - MessageBroker__Host=amqp://cleanarchitecture.mq:5672
+      - MessageBroker__Username=guest
+      - MessageBroker__Password=guest
+    ports:
+      - 5000:8080
+      - 5001:8081
 
   cleanarchitecture.db:
     image: postgres:latest
@@ -17,4 +23,18 @@ services:
     volumes:
       - ./.containers/database:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - 5433:5433
+
+  cleanarchitecture.mq:
+    image: rabbitmq:4.0.3-management
+    container_name: Queue
+    hostname: cleanarchitecture-queue
+    volumes:
+      - ./.containers/queue/data/:/var/lib/rabbitmq
+      - ./.containers/queue/log/:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - 5672:5672
+      - 15672:15672
