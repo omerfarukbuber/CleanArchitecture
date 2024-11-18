@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Presentation.Authentication;
 
 namespace Presentation.Products;
 
@@ -24,7 +25,7 @@ public class ProductsModule() : CarterModule("api/products")
             var result = await sender.Send(getProductsQuery);
 
             return result.Match(Results.Ok, ApiResults.Problem);
-        });
+        }).AddEndpointFilter<ApiKeyAuthenticationEndpointFilter>();
 
         app.MapPost("/", async (CreateProductRequest request, ISender sender) =>
         {
